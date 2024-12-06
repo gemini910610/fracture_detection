@@ -7,9 +7,9 @@ image_dir = './ip_homework_data/scaphoid_detection/images'
 scaphoid_annotation_dir = './ip_homework_data/scaphoid_detection/annotations'
 fracture_annotation_dir = './ip_homework_data/fracture_detection/annotations'
 
-new_image_dir = './dataset/scaphoid_detection/images'
-new_scaphoid_annotation_dir = './dataset/scaphoid_detection/annotations'
-new_fracture_annotation_dir = './dataset/fracture_detection/annotations'
+new_image_dir = './dataset/images'
+new_scaphoid_annotation_dir = './dataset/scaphoid_annotations'
+new_fracture_annotation_dir = './dataset/fracture_annotations'
 
 os.makedirs(new_image_dir)
 os.makedirs(new_scaphoid_annotation_dir)

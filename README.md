@@ -5,7 +5,12 @@ poetry add tqdm
 poetry add rich
 ```
 ## Prepare Dataset
-will rename files in data/scaphoid_detection and data/fracture_detection, and copy into dataset/scaphoid_detection and dataset/fracture_detection
+rename files and copy into dataset
+|Origin Directory|Dataset Directory|
+|-|-|
+|data/scaphoid_detection/images|dataset/images|
+|data/scaphoid_detection/annotations|dataset/scaphoid_annotations|
+|data/fracture_detection/annotations|dataset/fracture_annotations|
 ```
 python rename.py
 ```
