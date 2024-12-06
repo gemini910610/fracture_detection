@@ -1,19 +1,21 @@
+import json
 import os
 import re
 import shutil
+from PIL import Image
 from tqdm_rich import tqdm
 
 image_dir = './ip_homework_data/scaphoid_detection/images'
 scaphoid_annotation_dir = './ip_homework_data/scaphoid_detection/annotations'
 fracture_annotation_dir = './ip_homework_data/fracture_detection/annotations'
 
-new_image_dir = './dataset/images'
-new_scaphoid_annotation_dir = './dataset/scaphoid_annotations'
-new_fracture_annotation_dir = './dataset/fracture_annotations'
+new_scaphoid_dir = './dataset/scaphoid_detection'
+new_fracture_dir = './dataset/fracture_detection'
 
-os.makedirs(new_image_dir)
-os.makedirs(new_scaphoid_annotation_dir)
-os.makedirs(new_fracture_annotation_dir)
+os.makedirs(f'{new_scaphoid_dir}/images')
+os.makedirs(f'{new_scaphoid_dir}/annotations')
+os.makedirs(f'{new_fracture_dir}/images')
+os.makedirs(f'{new_fracture_dir}/annotations')
 
 new_sides = {
     'AP0': 'AP',
@@ -27,15 +29,22 @@ new_sides = {
 }
 
 files = os.listdir(image_dir)
-for filename in tqdm(files):
+for image_filename in tqdm(files):
     pattern = r'^(\d+).?([LR])?.*[ -](\S+)\.jpg'
-    id, hand, side = re.search(pattern, filename).groups()
+    id, hand, side = re.search(pattern, image_filename).groups()
     side = new_sides[side]
-    new_filename = f'{id}_{side}.jpg' if hand is None else f'{id}_{hand}_{side}.jpg'
-    shutil.copyfile(f'{image_dir}/{filename}', f'{new_image_dir}/{new_filename}')
+    new_image_filename = f'{id}_{side}.jpg' if hand is None else f'{id}_{hand}_{side}.jpg'
+    image = Image.open(f'{image_dir}/{image_filename}')
+    image.save(f'{new_scaphoid_dir}/images/{new_image_filename}')
 
-    filename = filename.replace('jpg', 'json')
+    filename = image_filename.replace('jpg', 'json')
     filename = filename.replace('OB', 'AP')
-    new_filename = new_filename.replace('jpg', 'json')
-    shutil.copyfile(f'{scaphoid_annotation_dir}/{filename}', f'{new_scaphoid_annotation_dir}/{new_filename}')
-    shutil.copyfile(f'{fracture_annotation_dir}/{filename}', f'{new_fracture_annotation_dir}/{new_filename}')
+    new_filename = new_image_filename.replace('jpg', 'json')
+    shutil.copyfile(f'{scaphoid_annotation_dir}/{filename}', f'{new_scaphoid_dir}/annotations/{new_filename}')
+    shutil.copyfile(f'{fracture_annotation_dir}/{filename}', f'{new_fracture_dir}/annotations/{new_filename}')
+
+    with open(f'{scaphoid_annotation_dir}/{filename}') as file:
+        annotation = json.load(file)
+    bbox = [int(box) for box in annotation[0]['bbox']]
+    image = image.crop(bbox)
+    image.save(f'{new_fracture_dir}/images/{new_image_filename}')
