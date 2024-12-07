@@ -34,7 +34,7 @@ class ScaphoidDataset(Dataset):
         origin_bbox = torch.tensor([int(box) for box in annotation[0]['bbox']])
         scale = self.image_size / origin_size
         bbox = (origin_bbox + padding.repeat(2)) * scale
-        return image, bbox, padding, origin_image
+        return image, bbox, padding, filename
 
     def __len__(self):
         return self.length
@@ -43,12 +43,16 @@ if __name__ == '__main__':
     from table import Table
 
     dataset = ScaphoidDataset('dataset/scaphoid_detection')
-    image, bbox, padding, origin_image = dataset[0]
+    image, bbox, padding, filename = dataset[0]
 
-    table = Table(['Object', 'Shape'], {
-        'Image': tuple(image.shape),
-        'Bounding Box': tuple(bbox.shape),
-        'Padding': tuple(padding.shape),
-        'Origin Image': origin_image.size
-    })
+    table = Table(
+        title='Scaphoid Detection',
+        headers=['Object', 'Shape'],
+        contents={
+            'Image': tuple(image.shape),
+            'Bounding Box': tuple(bbox.shape),
+            'Padding': tuple(padding.shape),
+            'Filename': filename
+        }
+    )
     table.display()

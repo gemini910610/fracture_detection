@@ -16,15 +16,17 @@ def plot_bbox(image, bbox, outline='red', width=3, display=False):
 
 if __name__ == '__main__':
     from datasets import ScaphoidDataset
+    from PIL import Image
     from torchvision import transforms
 
     dataset = ScaphoidDataset('dataset/scaphoid_detection')
-    image, bbox, padding, origin_image = dataset[0]
+    image, bbox, padding, filename = dataset[0]
 
     to_image = transforms.ToPILImage()
     image = to_image(image)
 
     plot_bbox(image, bbox, display=True)
 
+    origin_image = Image.open(f'dataset/scaphoid_detection/images/{filename}.jpg')
     bbox = restore_bbox(image, origin_image, bbox, padding)
     plot_bbox(origin_image, bbox, width=5, display=True)
