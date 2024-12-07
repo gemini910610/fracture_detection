@@ -34,6 +34,7 @@ class ScaphoidDataset(Dataset):
         origin_bbox = torch.tensor([int(box) for box in annotation[0]['bbox']])
         scale = self.image_size / origin_size
         bbox = (origin_bbox + padding.repeat(2)) * scale
+        bbox = bbox / self.image_size
         return image, bbox, padding, filename
 
     def __len__(self):
