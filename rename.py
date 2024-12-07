@@ -3,7 +3,7 @@ import os
 import re
 import shutil
 from PIL import Image
-from tqdm_rich import tqdm
+from rich_tqdm import tqdm
 
 image_dir = './ip_homework_data/scaphoid_detection/images'
 scaphoid_annotation_dir = './ip_homework_data/scaphoid_detection/annotations'
