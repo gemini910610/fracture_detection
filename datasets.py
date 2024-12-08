@@ -31,10 +31,13 @@ class ScaphoidDataset(Dataset):
         
         with open(f'{self.path}/annotations/{filename}.json') as file:
             annotation = json.load(file)
-        origin_bbox = torch.tensor([int(box) for box in annotation[0]['bbox']])
-        scale = self.image_size / origin_size
-        bbox = (origin_bbox + padding.repeat(2)) * scale
-        bbox = bbox / self.image_size
+        left, top, right, bottom = torch.tensor([int(box) for box in annotation[0]['bbox']])
+        x = (left + right) / 2
+        y = (top + bottom) / 2
+        width = right - left
+        height = bottom - top
+        bbox = torch.tensor([x + padding[0], y + padding[1], width, height])
+        bbox = bbox / origin_size
         return image, bbox, padding, filename
 
     def __len__(self):
